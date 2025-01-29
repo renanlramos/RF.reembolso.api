@@ -1,7 +1,7 @@
 *** Settings ***
 Documentation   Reembolso
-Resource        ./src/keywords.resource
-Resource        ./src/variables.resource
+Resource        ../src/keywords.resource
+Resource        ../src/variables.resource
 Library         RequestsLibrary
 
 Suite Setup     Recuperar Bearer Token
