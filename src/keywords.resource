@@ -36,7 +36,7 @@ Quando recupero o protocolo "${protocol}" da Carterinha "${patient}" usando o en
     ...  ELSE IF             "${version}" == "Consults"
     ...    GET On Session    reembolso    url=v1/protocols/consults?user-code=44937000312004&protocol=${protocol}
     ...  ELSE
-    ...    Fatal Error
+    ...    Fail
     Set Test Variable   ${response}
 
 Então a resposta de status deve ser de código 200
@@ -58,7 +58,7 @@ E o corpo da resposta deve conter os dados do paciente e do protocolo com a estr
     ...  ELSE IF      "${version}" == "Prévia"
     ...    Should Be True    ${response.json()['content']['preview']}
     ...  ELSE
-    ...    Fatal Error
+    ...    Fail
     
 
 Quando crio um novo protocolo de "${type}" para o paciente "${patient}"
@@ -68,7 +68,7 @@ Quando crio um novo protocolo de "${type}" para o paciente "${patient}"
     ...    ELSE IF    "${type}"=="prévia"    
     ...    POST On Session    reembolso    url=v1/previews     data={"UserCode":"60300063869045","PatientCode":"${patient}","PhoneNumber":"31972144103","Email":"stonelacerda@gmail.com","ModalityCode":"4","OriginRequestCode":"7","Preview":"P","ProviderCode":"1","EmissionNote":"TESTE","contractCode":"03GMZ0000","planCode":"9732"}
     ...    ELSE
-    ...    Fatal Error
+    ...    Fail
     Set Test Variable    ${response}
     Set Test Variable    ${patient}
 
@@ -108,7 +108,7 @@ Então fecho a solicitação de "${type}"
     ...    ELSE IF           "${type}"=="prévia"
     ...    POST On Session    reembolso    url=v1/previews/close-preview      data={"userCode": "${patient}","protocolCode": "${protocolCode}"}    
     ...    ELSE
-    ...    Fatal Error
+    ...    Fail
     Set Test Variable    ${response}
 
 Quando listo todos as solicitações do beneficiário "${usercode}" usando a "${version}"
@@ -118,7 +118,7 @@ Quando listo todos as solicitações do beneficiário "${usercode}" usando a "${
     ...    ELSE IF           "${version}" == "V2"    
     ...    GET On Session    reembolso    url=v2/protocols?user-code=${usercode}
     ...    ELSE    
-    ...    Fatal Error
+    ...    Fail
     Set Test Variable    ${response}
 
 Quando solicito os dados de demonstrativo de protocolo "${protocol}" e paciente "${patient}"
@@ -132,18 +132,14 @@ Quando solicito a listagem dos Protocolos BPA de status "${code}"
 Então o corpo da reposta deve conter os dados de BPA
     Should Be True    ${response.json()['content']['protocolsBpa']}
 
-E código de protocolo:"${protocolCode}" e código de solicitação:"${requestCode}"
-    Set Test Variable    ${protocolCode}
-    Set Test Variable    ${requestCode}
-
-Quando solicito o download do arquivo "${file}" de "${type}"
+E solicito o download do arquivo "${file}" de "${type}"
     ${response}    
     ...    Run Keyword If    "${type}"=="reembolso"
-    ...    GET On Session    reembolso    url=v1/protocols/file?protocolCode=${protocolCode}&requestCode=${requestCode}&fileName=${file}&path=anexo_reembolso
-    ...    ELSE IF    "${type}"=="prévia"    
-    ...    GET On Session    reembolso    url=v1/previews/file?protocolCode=${protocolCode}&requestCode=${requestCode}&fileName=${file}
+    ...    GET On Session    reembolso    url=v1/protocols/file?protocolCode=${protocol_code}&requestCode=${request_code}&fileName=${file}
+    ...    ELSE IF    "${type}"=="prévia"     
+    ...    GET On Session    reembolso    url=v1/previews/file?protocolCode=${protocol_code}&requestCode=${request_code}&fileName=${file}
     ...    ELSE
-    ...    Fatal Error
+    ...    Fail
     Set Test Variable    ${response}
 
 E o corpo da resposta deve conter o link para download do arquivo
@@ -158,6 +154,51 @@ Então o corpo da reposta deve conter uma lista com varios dados de anexos
     Should Be True    ${response.json()['content']['attachFiles'][1]}
     Log    ${response.json()['content']['attachFiles'][0]}
     Log    ${response.json()['content']['attachFiles'][1]}
+
+Então posso anexar arquivos ao informar os dados do "${type}"
+    #Necessario iniciar uma nova sessão apenas para o anexo, pois a keyword não consegue fazer a primeira sessao ter
+    #cabeçalho diferente
+    ${headersReimbursement}=       Create Dictionary     Authorization=${bearer_token}    Ocp-Apim-Subscription-Key=${apim_key_management} 
+    ${headersPreview}=             Create Dictionary     Authorization=${bearer_token}    Ocp-Apim-Subscription-Key=${apim_key_preview}
+    
+    Run Keyword If    "${type}"=="reembolso"
+    ...        Create Session    reembolsoAnexo    ${baseurl_management_api}    headers=${headersReimbursement}  
+    ...    ELSE IF    "${type}"=="prévia"
+    ...        Create Session    reembolsoAnexo    ${baseurl_preview_api}    headers=${headersPreview}  
+    ...    ELSE
+    ...        Fail
+
+    ${data}=    Create Dictionary    
+    ...    protocolCode=${protocol_code}    
+    ...    requestCode=${request_code}    
+    ...    attachmentType=1    
+    ...    observation=TESTE AUTOMATIZADO RF    
+
+    ${file}=    Create Dictionary    
+    ...    formFile=${FILE_PATH}    
+    
+    ${response}=    
+    ...    Run Keyword If    "${type}"=="reembolso"
+    ...    POST On Session    reembolsoAnexo   url=v1/protocols/attach-file      data=${data}    files=${file}   
+    ...      ELSE IF    "${type}"=="prévia"
+    ...    POST On Session    reembolsoAnexo   url=v1/previews/attach-file       data=${data}    files=${file}
+    ...      ELSE
+    ...    Fail
+ 
+    Set Test Variable    ${response}
+
+E a resposta deve conter o código do anexo    
+    Set Test Variable     ${attachmentCode}    ${response.json()['content']['attachmentCode']}
+
+E posso excluir o anexo de "${type}"
+    ${response}=    
+    ...    Run Keyword If    "${type}"=="reembolso"
+    ...    DELETE On Session    reembolso    url=v1/protocols/file/${attachmentCode}
+    ...      ELSE IF    "${type}"=="prévia"
+    ...    DELETE On Session    reembolso    url=v1/previews/file/${attachmentCode}
+    ...      ELSE
+    ...    Fail
+    Set Test Variable    ${response}   
 
 ### KEYWORDS COM FOCO EM USO NO CROSS.API###
 
@@ -254,7 +295,7 @@ Então solicito o PDF de "${type}"
     ...  ELSE IF    "${type}" == "demonstrativo"
     ...    POST On Session    reembolso    url=v1/request-statement    data={"Protocol": "${protocol}","patientCode": "${patient}"}
     ...  ELSE
-    ...    Fatal Error
+    ...    Fail
     Set Test Variable    ${response}
 
 E o corpo da resposta deve conter um link

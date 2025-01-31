@@ -102,9 +102,12 @@ Consultar Protocolos BPA
 Download de anexo
     [Tags]    CT013
     Dado que esteja na Management.API do Reembolso
-    E código de protocolo:"235362" e código de solicitação:"233162"
-    Quando solicito o download do arquivo "100022025679_Laudomédicolucas.pdf" de "reembolso"
-    Então a resposta de status deve ser de código 200
+    Quando crio um novo protocolo de "reembolso" para o paciente "60300063869002"
+    E a resposta de status deve ser de código 200
+    E o corpo da resposta deve conter os dados de identificação do protocolo e solicitação
+    Então posso anexar arquivos ao informar os dados do "prévia"
+    E deve conter a mensagem: "ARQUIVO ANEXO VINCULADO COM SUCESSO."
+    E solicito o download do arquivo "formFile" de "reembolso"
     E o corpo da resposta deve conter o link para download do arquivo
 
 Listar anexos
@@ -115,8 +118,22 @@ Listar anexos
 
 Anexar arquivo reembolso
     [Tags]    CT015
-    Skip
+    Dado que esteja na Management.API do Reembolso
+    Quando crio um novo protocolo de "reembolso" para o paciente "60300063869002"
+    E a resposta de status deve ser de código 200
+    E o corpo da resposta deve conter os dados de identificação do protocolo e solicitação
+    Então posso anexar arquivos ao informar os dados do "reembolso"
+    E deve conter a mensagem: "ARQUIVO ANEXO VINCULADO COM SUCESSO."
 
 Deletar anexo reembolso
     [Tags]    CT016
-    Skip
+    Dado que esteja na Management.API do Reembolso
+    Quando crio um novo protocolo de "reembolso" para o paciente "60300063869002"
+    E a resposta de status deve ser de código 200
+    E o corpo da resposta deve conter os dados de identificação do protocolo e solicitação
+    Então posso anexar arquivos ao informar os dados do "reembolso"
+    E deve conter a mensagem: "ARQUIVO ANEXO VINCULADO COM SUCESSO."
+    E a resposta deve conter o código do anexo
+    E posso excluir o anexo de "reembolso"
+    E deve conter a mensagem: "ARQUIVO EXCLUIDO COM SUCESSO."
+

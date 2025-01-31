@@ -45,18 +45,34 @@ Consultar Prévia
     Então consulto a prévia
     E o corpo da resposta deve conter os dados do paciente e do protocolo com a estrutura do(a) "Prévia"
 
-Download anexo Prévia
+Download anexo Prévia 2
     [Tags]    CT005
     Dado que esteja na Preview.API do Reembolso
-    E código de protocolo:"304599" e código de solicitação:"298972"
-    Quando solicito o download do arquivo "testeclinipam.png" de "prévia"
-    Então a resposta de status deve ser de código 200
+    Quando crio um novo protocolo de "prévia" para o paciente "60300063869002"
+    E a resposta de status deve ser de código 200
+    E o corpo da resposta deve conter os dados de identificação do protocolo e solicitação
+    Então posso anexar arquivos ao informar os dados do "prévia"
+    E deve conter a mensagem: "ARQUIVO ANEXO VINCULADO COM SUCESSO."
+    E solicito o download do arquivo "formFile" de "prévia"
     E o corpo da resposta deve conter o link para download do arquivo
 
 Anexar arquivo prévia
     [Tags]    CT006
-    Skip
+    Dado que esteja na Preview.API do Reembolso
+    Quando crio um novo protocolo de "prévia" para o paciente "60300063869002"
+    E a resposta de status deve ser de código 200
+    E o corpo da resposta deve conter os dados de identificação do protocolo e solicitação
+    Então posso anexar arquivos ao informar os dados do "prévia"
+    E deve conter a mensagem: "ARQUIVO ANEXO VINCULADO COM SUCESSO."
 
 Deletar anexo prévia
     [Tags]    CT007
-    Skip
+    Dado que esteja na Preview.API do Reembolso
+    Quando crio um novo protocolo de "prévia" para o paciente "60300063869002"
+    E a resposta de status deve ser de código 200
+    E o corpo da resposta deve conter os dados de identificação do protocolo e solicitação
+    Então posso anexar arquivos ao informar os dados do "prévia"
+    E deve conter a mensagem: "ARQUIVO ANEXO VINCULADO COM SUCESSO."
+    E a resposta deve conter o código do anexo
+    E posso excluir o anexo de "prévia"
+    E deve conter a mensagem: "ARQUIVO EXCLUIDO COM SUCESSO."
