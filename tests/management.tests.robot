@@ -11,14 +11,14 @@ Default Tags    Management
 Criar Novo Protocolo
     [Tags]    CT001
     Dado que esteja na Management.API do Reembolso
-    Quando crio um novo protocolo de reembolso para o paciente "60300063869002"
+    Quando crio um novo protocolo de "reembolso" para o paciente "60300063869002"
     Então a resposta de status deve ser de código 200
     E o corpo da resposta deve conter os dados de identificação do protocolo e solicitação
    
 Criar nova solicitação para o mesmo Protocolo
     [Tags]    CT002
     Dado que esteja na Management.API do Reembolso
-    Quando crio um novo protocolo de reembolso para o paciente "60300063869002"
+    Quando crio um novo protocolo de "reembolso" para o paciente "60300063869002"
     E o corpo da resposta deve conter os dados de identificação do protocolo e solicitação
     E crio uma nova solicitação para o mesmo protocolo
     Então a resposta de status deve ser de código 200
@@ -27,19 +27,20 @@ Criar nova solicitação para o mesmo Protocolo
 Atualizar solicitação
     [Tags]    CT003
     Dado que esteja na Management.API do Reembolso
-    Quando crio um novo protocolo de reembolso para o paciente "60300063869002"
+    Quando crio um novo protocolo de "reembolso" para o paciente "60300063869002"
     E o corpo da resposta deve conter os dados de identificação do protocolo e solicitação
-    Então é possivel fazer a atualização dos dados da solicitação
+    Então é possivel fazer a atualização dos dados da solicitação de "reembolso"
     E deve conter a mensagem: "SOLICITAÇÃO REGISTRADA COM SUCESSO."
+    E os dados da resposta da criação deve ser igual da atualização
     E a resposta de status deve ser de código 200
 
 Fechar Protocolo
     [Tags]    CT004
     Dado que esteja na Management.API do Reembolso
-    Quando crio um novo protocolo de reembolso para o paciente "60300063869002"
+    Quando crio um novo protocolo de "reembolso" para o paciente "60300063869002"
     E a resposta de status deve ser de código 200
     E o corpo da resposta deve conter os dados de identificação do protocolo e solicitação
-    Então fecho a solicitação de reembolso
+    Então fecho a solicitação de "reembolso"
     E deve conter a mensagem: "PROTOCOLO ENVIADO PARA FILA DE ANÁLISE."
 
 Recuperar Protocolo de Paciente
@@ -102,8 +103,7 @@ Download de anexo
     [Tags]    CT013
     Dado que esteja na Management.API do Reembolso
     E código de protocolo:"235362" e código de solicitação:"233162"
-    E informo a pasta "anexo_reembolso"
-    Quando solicito o download do arquivo "100022025679_Laudomédicolucas.pdf"
+    Quando solicito o download do arquivo "100022025679_Laudomédicolucas.pdf" de "reembolso"
     Então a resposta de status deve ser de código 200
     E o corpo da resposta deve conter o link para download do arquivo
 
@@ -111,12 +111,12 @@ Listar anexos
     [Tags]    CT014
     Dado que esteja na Management.API do Reembolso
     Quando solicito a listagem dos anexos do protocolo "304569" e solicitação "298954"
-    Então o corpo da reposta deve conter uma lista com varios anexos
+    Então o corpo da reposta deve conter uma lista com varios dados de anexos
 
-Anexar arquivo
+Anexar arquivo reembolso
     [Tags]    CT015
     Skip
 
-Deletar arquivo anexado
+Deletar anexo reembolso
     [Tags]    CT016
     Skip
