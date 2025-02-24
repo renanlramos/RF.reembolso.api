@@ -30,7 +30,7 @@ Quando recupero o protocolo "${protocol}" da Carterinha "${patient}" usando o en
     ...    Run Keyword If    "${version}" == "V1"    
     ...    GET On Session    reembolso    url=v1/protocols/${protocol}?patient-code=${patient}  
     ...  ELSE IF             "${version}" == "V2"
-    ...    GET On Session    reembolso    url=v2/protocols/${protocol}/user-code/${patient}
+    ...    GET On Session    reembolso    url=v2/protocols/${protocol}?patientCode=${patient}
     ...  ELSE IF             "${version}" == "Consult-refunds"
     ...    GET On Session    reembolso    url=v1/protocols/consult-refunds?user-code=44937000312004&patient-code=${patient}&protocol=${protocol}    
     ...  ELSE IF             "${version}" == "Consults"
@@ -116,7 +116,7 @@ Quando listo todos as solicitações do beneficiário "${usercode}" usando a "${
     ...    Run Keyword If    "${version}" == "V1"    
     ...    GET On Session    reembolso    url=v1/protocols?user-code=${usercode}
     ...    ELSE IF           "${version}" == "V2"    
-    ...    GET On Session    reembolso    url=v2/protocols?user-code=${usercode}
+    ...    GET On Session    reembolso    url=v2/protocols?patient-code=${usercode}
     ...    ELSE    
     ...    Fail
     Set Test Variable    ${response}
