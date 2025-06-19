@@ -1,0 +1,40 @@
+name: Testes Robot Framework com Secrets
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Instalar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Instalar Robot Framework e RequestsLibrary
+        run: |
+          pip install robotframework
+          pip install robotframework-requests
+
+      - name: Censurar variáveis sensíveis do arquivo resource
+        run: |
+          sed -i '/client_secret/d' src/variables.resource
+          sed -i '/apim_key_engine/d' src/variables.resource
+          sed -i '/apim_key_preview/d' src/variables.resource
+          sed -i '/apim_key_cross/d' src/variables.resource
+          sed -i '/apim_key_management/d' src/variables.resource
+
+      - name: Executar testes com secrets
+        run: |
+          robot \
+            --variable client_secret:${{ secrets.CLIENT_SECRET }} \
+            --variable apim_key_engine:${{ secrets.APIM_KEY_ENGINE }} \
+            --variable apim_key_preview:${{ secrets.APIM_KEY_PREVIEW }} \
+            --variable apim_key_cross:${{ secrets.APIM_KEY_CROSS }} \
+            --variable apim_key_management:${{ secrets.APIM_KEY_MANAGEMENT }} \
+            --outputdir .\results\ .\tests
