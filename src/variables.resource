@@ -3,7 +3,7 @@
 ${urltoken}         https://api-hml-lab.hapvida.com.br/identity/api/v1/token
 ${client_id}        abe1bf28-dc50-47a5-9f22-c62d1e759b4f
 ${scope}            api://abe1bf28-dc50-47a5-9f22-c62d1e759b4f/.default
-${client_secret}    kaD8Q~Pj0STxzh0aSuo1QTia.fZZeE3oigcg4azB
+${client_secret}    NONE
 
 #referente ao management.api#
 ${baseurl_management_api}                           https://api-hml-lab.hapvida.com.br/financial/reimbursement/management/api
@@ -15,13 +15,13 @@ ${expected_json_get_protocol_consults}              {'content': {'consults': [{'
 ${FILE_PATH}                                        ${CURDIR}/anexo.pdf
 ${FILE_NAME}                                        anexo.pdf
 #referente ao cross.api#
-${apim_key_cross}                        7293427721f8402d82ad1d65d0579d81
+${apim_key_cross}                        NONE
 ${baseurl_cross_api}                     https://api-hml-lab.hapvida.com.br/financial/reimbursement/cross/api
 
 #referente ao preview.api#
-${apim_key_preview}           0a92f6530d614c788f73f14bd3d54d5a
+${apim_key_preview}           NONE
 ${baseurl_preview_api}        https://api-hml-lab.hapvida.com.br/financial/reimbursement/preview/api
 
 #referente ao engine.pdf.api#
-${apim_key_engine}           7f2ee70d578b4a749811ed380de86d97
+${apim_key_engine}           NONE
 ${baseurl_engine_api}        https://api-hml-lab.hapvida.com.br/financial/reimbursement/engine/pdf/api
