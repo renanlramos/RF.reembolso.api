@@ -37,4 +37,4 @@ jobs:
             --variable apim_key_preview:${{ secrets.APIM_KEY_PREVIEW }} \
             --variable apim_key_cross:${{ secrets.APIM_KEY_CROSS }} \
             --variable apim_key_management:${{ secrets.APIM_KEY_MANAGEMENT }} \
-            tests/
+            --outputdir .\results\ .\tests\
